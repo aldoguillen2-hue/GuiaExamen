@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía de Preparación — Examen Parcial IC MME0204</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1A2E4A;
+    --steel: #2E5F8A;
+    --gold: #C8921A;
+    --ice: #D6E8F7;
+    --icelt: #EDF4FB;
+    --white: #FFFFFF;
+    --offwhite: #F7F9FC;
+    --gray: #64748B;
+    --graylt: #E2E8F0;
+    --dark: #1E293B;
+    --green: #1A5C38;
+    --greenlt: #D4EDDA;
+    --red: #9B1C1C;
+    --redlt: #FDECEA;
+    --gold-pale: #FDF3DC;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: var(--offwhite);
+    color: var(--dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HEADER */
+  .site-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+  }
+  .site-header-inner {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .site-header .inst {
+    font-size: 11px;
+    color: #94B4CC;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .site-header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+  .site-header .sub {
+    font-size: 13px;
+    color: var(--ice);
+    margin-bottom: 12px;
+  }
+  .badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .badge-gold { background: var(--gold); color: var(--navy); }
+  .badge-steel { background: var(--steel); color: #fff; }
+
+  /* PROGRESS */
+  .progress-wrap {
+    max-width: 780px;
+    margin: 1.5rem auto 0;
+    padding: 0 1.5rem;
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--gray);
+    margin-bottom: 6px;
+  }
+  .progress-bar {
+    background: var(--graylt);
+    border-radius: 8px;
+    height: 8px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 8px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* MAIN */
+  .main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 4rem;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: #fff;
+    border: 1px solid var(--graylt);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+  }
+  .q-card.answered-correct { border-color: var(--green); background: #f0faf4; }
+  .q-card.answered-wrong   { border-color: var(--red);   background: #fff5f5; }
+
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .q-num {
+    width: 30px; height: 30px;
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .q-unidad {
+    font-size: 11px;
+    color: var(--gray);
+    background: var(--offwhite);
+    border: 1px solid var(--graylt);
+    border-radius: 20px;
+    padding: 2px 10px;
+  }
+  .q-text {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--dark);
+    margin-bottom: 1rem;
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--graylt);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--offwhite);
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .opt:hover:not(.disabled) {
+    background: var(--icelt);
+    border-color: var(--steel);
+  }
+  .opt.selected { border-color: var(--navy); background: var(--icelt); }
+  .opt.correct  { border-color: var(--green); background: #e8f5ee; cursor: default; }
+  .opt.wrong    { border-color: var(--red);   background: #fef2f2; cursor: default; }
+  .opt.disabled { cursor: default; }
+
+  .opt-letter {
+    min-width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--graylt);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    color: var(--gray);
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+  }
+  .opt.selected .opt-letter { background: var(--navy); color: var(--gold); border-color: var(--navy); }
+  .opt.correct  .opt-letter { background: var(--green); color: #fff; border-color: var(--green); }
+  .opt.wrong    .opt-letter { background: var(--red);   color: #fff; border-color: var(--red); }
+
+  .opt-text {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--dark);
+  }
+
+  /* FEEDBACK */
+  .feedback {
+    display: none;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+  .feedback.correct { background: #e8f5ee; color: #155724; border-left: 4px solid var(--green); }
+  .feedback.wrong   { background: #fef2f2; color: #721c24; border-left: 4px solid var(--red); }
+  .feedback strong  { display: block; margin-bottom: 4px; font-size: 13px; }
+
+  /* RESULT */
+  .result-panel {
+    display: none;
+    background: var(--navy);
+    color: #fff;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  .result-label-top { font-size: 12px; color: #94B4CC; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .result-score { font-size: 64px; font-weight: 700; color: var(--gold); line-height: 1; }
+  .result-of { font-size: 20px; color: var(--ice); margin-top: 4px; margin-bottom: 1.5rem; }
+  .result-bars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 400px;
+    margin: 0 auto 1.5rem;
+  }
+  .result-bar-item {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .result-bar-item .rval { font-size: 28px; font-weight: 700; }
+  .result-bar-item .rkey { font-size: 12px; color: #94B4CC; margin-top: 2px; }
+  .result-bar-item.ok .rval { color: #6EE7B7; }
+  .result-bar-item.ko .rval { color: #FCA5A5; }
+
+  .result-divider { border: none; border-top: 1px solid rgba(255,255,255,0.12); margin: 1.5rem 0; }
+
+  .result-unidades {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    max-width: 480px;
+    margin: 0 auto 1.5rem;
+    text-align: left;
+  }
+  .r-unit {
+    background: rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .r-unit-name { color: var(--ice); font-weight: 600; margin-bottom: 2px; }
+  .r-unit-score { font-size: 18px; font-weight: 700; }
+  .r-unit-score.all-ok { color: #6EE7B7; }
+  .r-unit-score.partial { color: var(--gold); }
+  .r-unit-score.needs-work { color: #FCA5A5; }
+
+  .result-msg {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+  .result-msg.aprobado { background: var(--green); color: #D4EDDA; }
+  .result-msg.repaso   { background: #7C3D0F; color: var(--gold-pale); }
+
+  .btn-reset {
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .btn-reset:hover { opacity: 0.88; }
+
+  /* FOOTER */
+  .site-footer {
+    background: var(--navy);
+    color: #94B4CC;
+    text-align: center;
+    font-size: 11px;
+    padding: 1rem;
+    margin-top: 2rem;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 520px) {
+    .site-header { padding: 1.5rem 1rem 1rem; }
+    .main { padding: 1rem 1rem 3rem; }
+    .progress-wrap { padding: 0 1rem; }
+    .result-unidades { grid-template-columns: 1fr; }
+    .result-bars { grid-template-columns: 1fr 1fr; }
+    .q-card { padding: 1.25rem; }
+    .site-header h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="inst">POSFACE · UNAH — Maestría en Mercadotecnia Estratégica y Gestión Comercial</div>
+    <h1>Guía de Preparación — Examen Parcial</h1>
+    <p class="sub">Inteligencia Competitiva (MME0204) &nbsp;·&nbsp; Unidades 1–4 &nbsp;·&nbsp; Viernes 17 de julio de 2026, 8:00–9:00 PM</p>
+    <div class="badges">
+      <span class="badge badge-gold">10 preguntas · Selección múltiple</span>
+      <span class="badge badge-steel">Calificación automática</span>
+      <span class="badge badge-steel">Máster Aldo B. Guillén Guillén</span>
+    </div>
+  </div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-top">
+    <span id="prog-label">0 de 10 respondidas</span>
+    <span id="prog-pct">0%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+</div>
+
+<main class="main">
+  <div id="questions"></div>
+  <div class="result-panel" id="result"></div>
+</main>
+
+<footer class="site-footer">
+  Inteligencia Competitiva MME0204 &nbsp;·&nbsp; POSFACE · UNAH &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Guía de estudio — uso exclusivo del grupo
+</footer>
+
+<script>
+const Qs = [
+  {
+    unidad: "Unidad 1 — Conceptualización de la IC",
+    texto: "Una empresa hondureña de telecomunicaciones contrata a un consultor externo para rastrear las estrategias de sus rivales usando bases de datos abiertas, patentes registradas y perfiles públicos de LinkedIn de ejecutivos clave. El gerente general califica este proceso como «espionaje industrial». ¿Cuál es la respuesta técnicamente correcta del consultor?",
+    opciones: [
+      "El gerente tiene razón: acceder a perfiles públicos de LinkedIn sin consentimiento expreso constituye una práctica de espionaje regulada.",
+      "El proceso descrito corresponde a Inteligencia Competitiva legítima, pues utiliza exclusivamente fuentes abiertas dentro del marco ético de la SCIP.",
+      "La práctica es válida solo si la empresa posee una licencia de análisis competitivo emitida por la CNBS.",
+      "Depende del país: en Honduras, el rastreo de información pública de competidores está penalizado por la Ley de Propiedad Intelectual."
+    ],
+    correcta: 1,
+    explicacion: "La IC opera exclusivamente sobre fuentes abiertas y legales. El uso de bases de datos públicas, patentes y perfiles de LinkedIn es exactamente lo que define al OSINT dentro del marco ético de la SCIP — lo opuesto al espionaje industrial, que implica métodos ilegales para obtener secretos comerciales."
+  },
+  {
+    unidad: "Unidad 1 — Conceptualización de la IC",
+    texto: "El presidente de una cadena de supermercados hondureña asegura que «ya tienen toda la información que necesitan» porque sus vendedores reportan informalmente lo que observan en tiendas rivales. Un analista recién contratado identifica tres características que hacen que ese proceso NO sea Inteligencia Competitiva. ¿Cuál de los siguientes grupos describe correctamente esas tres características faltantes?",
+    opciones: [
+      "Falta de presupuesto asignado, ausencia de software especializado y no contar con certificación SCIP.",
+      "El proceso no es sistemático, no es analítico y no responde a preguntas estratégicas definidas (KITs).",
+      "Los vendedores no tienen formación académica en IC, no usan fuentes digitales y no elaboran reportes mensuales.",
+      "La información no llega al directorio, no se usa tecnología de BI y no existe un departamento dedicado a IC."
+    ],
+    correcta: 1,
+    explicacion: "La IC se define por tres pilares: sistemática (proceso estructurado y continuo), analítica (transforma datos en inteligencia accionable) y estratégica (responde a KITs definidos por la dirección). El reporte informal de vendedores no cumple ninguno de los tres pilares — es información sin sistema, sin análisis y sin pregunta estratégica que responder."
+  },
+  {
+    unidad: "Unidad 2 — Enfoque Empresarial de la IC",
+    texto: "El director comercial de una distribuidora en Cortés reacciona cada vez que su competidor lanza una promoción copiando el descuento 72 horas después, sin análisis previo ni planificación. La gerente de IC propone implementar un sistema de KITs y ciclo de vigilancia para anticipar movimientos del rival. ¿En qué perfil gerencial se ubica actualmente el director y a cuál aspira transformarlo la gerente?",
+    opciones: [
+      "Actualmente es un perfil Intuitivo; la gerente propone transformarlo en Tecnológico.",
+      "Actualmente es un perfil Reactivo; la gerente propone transformarlo en Estratégico.",
+      "Actualmente es un perfil Operativo; la gerente propone transformarlo en Proactivo.",
+      "Actualmente es un perfil Táctico; la gerente propone transformarlo en Analítico."
+    ],
+    correcta: 1,
+    explicacion: "El perfil Reactivo caracteriza a quien responde a los movimientos del competidor sin anticipación ni análisis — exactamente lo que hace el director. El perfil Estratégico usa IC para anticipar, con KITs definidos y ciclo de vigilancia sistemático que permite actuar antes que el rival, no después."
+  },
+  {
+    unidad: "Unidad 2 — Enfoque Empresarial de la IC",
+    texto: "Nokia tenía en 2006 más del 40% del mercado mundial de teléfonos móviles, laboratorios de investigación de vanguardia y patentes sobre pantallas táctiles. Sin embargo, no actuó sobre las señales débiles que anunciaban el cambio hacia smartphones de ecosistema cerrado. ¿Qué lección central de IC ilustra este caso para la toma de decisiones estratégicas?",
+    opciones: [
+      "La ventaja tecnológica es siempre suficiente para sostener el liderazgo de mercado sin necesidad de IC formal.",
+      "La IC solo es valiosa en mercados emergentes donde la información competitiva no está disponible públicamente.",
+      "Poseer datos e incluso patentes es insuficiente: la IC debe convertir esas señales en decisiones estratégicas a tiempo — la información sin acción no es inteligencia.",
+      "El fracaso de Nokia se debió exclusivamente a una estrategia de precios incorrecta, no a déficits en IC."
+    ],
+    correcta: 2,
+    explicacion: "Nokia ilustra la paradoja central de la IC: tener los datos no es suficiente. La IC completa el ciclo — recolectar, analizar, difundir Y generar decisiones a tiempo. Nokia tenía las señales y las patentes pero no actuó, que es exactamente la diferencia entre tener información e inteligencia accionable."
+  },
+  {
+    unidad: "Unidad 3 — Proceso de la IC: Ciclo",
+    texto: "El equipo de IC de un banco hondureño define el siguiente KIT: «¿Qué banco de la región lanzará el primer producto de crédito express completamente digital para el segmento no bancarizado antes del primer semestre de 2027?» El director de estrategia objeta que la pregunta «es demasiado específica y costará mucho responderla». ¿Cómo debe el analista de IC defender la formulación del KIT?",
+    opciones: [
+      "Tiene razón el director: un buen KIT debe ser amplio y flexible para adaptarse a cualquier escenario futuro del mercado.",
+      "La especificidad es exactamente lo que hace valioso al KIT — permite dirigir la recolección, medir cuándo está respondido y conectar directamente con una decisión estratégica real.",
+      "El analista debe reformular el KIT como una afirmación en lugar de una pregunta para reducir la ambigüedad operativa.",
+      "La pregunta debería dividirse en al menos diez sub-preguntas para cubrir todas las dimensiones posibles del fenómeno."
+    ],
+    correcta: 1,
+    explicacion: "Un KIT bien formulado es estratégico, específico, accionable y con horizonte temporal claro. La especificidad no es un defecto — es lo que permite focalizar la recolección, saber cuándo está respondido y generar una recomendación concreta. Un KIT vago produce inteligencia vaga e intransferible a la decisión."
+  },
+  {
+    unidad: "Unidad 3 — Proceso de la IC: Ciclo",
+    texto: "Una analista de IC de una exportadora de café hondureña evalúa tres fuentes para responder un KIT sobre tendencias de demanda en el mercado alemán: (A) un reportaje de BBC News sobre el mercado europeo de café, publicado hace tres años; (B) el informe anual 2024 de la Asociación Alemana de Tostadores de Café, descargado del sitio oficial; (C) un comentario en un foro de Reddit de un supuesto barista alemán. Aplicando la informetría R/C/A/E, ¿cuál fuente obtiene el perfil más sólido?",
+    opciones: [
+      "La fuente A, porque BBC News tiene mayor credibilidad institucional que una asociación sectorial.",
+      "La fuente C, porque refleja la experiencia directa del consumidor final en el mercado objetivo.",
+      "La fuente B, porque combina alta Relevancia (sector exacto), alta Confiabilidad (fuente oficial), alta Actualidad (2024) y media-alta Exclusividad (informe especializado no masivo).",
+      "Las tres fuentes tienen perfiles equivalentes y deben ponderarse por igual en el análisis."
+    ],
+    correcta: 2,
+    explicacion: "La informetría R/C/A/E evalúa Relevancia, Confiabilidad, Actualidad y Exclusividad. La fuente B (informe oficial 2024 del sector exacto) obtiene el perfil más sólido en las cuatro dimensiones. La fuente A pierde en Actualidad (3 años); la fuente C pierde en Confiabilidad (anónima, no verificable) y Exclusividad (foro público masivo)."
+  },
+  {
+    unidad: "Unidad 3 — Proceso de la IC: Ciclo",
+    texto: "Una empresa de distribución de consumo masivo en Honduras ha definido sus KITs con la alta dirección, tiene fuentes primarias y OSINT identificadas, ejecuta el análisis de hallazgos y produce briefs ejecutivos mensuales de alta calidad. Sin embargo, los gerentes reconocen que «nunca usamos realmente los briefs para cambiar ninguna decisión». ¿En cuál fase del ciclo de IC existe la falla crítica?",
+    opciones: [
+      "En la fase de recolección: las fuentes no están alineadas con los KITs definidos.",
+      "En la fase de planificación: los KITs no fueron formulados correctamente desde el inicio.",
+      "En la fase de análisis: los briefs no transforman los datos en recomendaciones accionables.",
+      "En la fase de difusión y uso: la inteligencia llega pero no está conectada al proceso de toma de decisiones real de la dirección."
+    ],
+    correcta: 3,
+    explicacion: "El ciclo de IC tiene cuatro fases: planificación, recolección, análisis y difusión/uso. Si los briefs son de alta calidad pero no cambian decisiones, la falla está en la última fase: la inteligencia no está integrada al proceso decisional de la dirección. Esto indica un problema de difusión y apropiación institucional, no de calidad analítica."
+  },
+  {
+    unidad: "Unidad 4 — Análisis, Difusión y Tecnología",
+    texto: "El analista de IC de una farmacéutica hondureña detecta que el principal competidor redujo el precio de un medicamento genérico un 18%, simultáneamente contrató a tres ejecutivos de ventas especializados en el sector público y publicó una oferta para arrendar bodega en Tegucigalpa. Aplica análisis de hipótesis y formula: «El competidor está preparando una ofensiva agresiva en el canal institucional antes del cierre del año fiscal». ¿Qué debería hacer a continuación para fortalecer esta hipótesis?",
+    opciones: [
+      "Presentarla como conclusión confirmada en el brief ejecutivo, ya que tres señales convergentes equivalen a evidencia suficiente.",
+      "Buscar activamente evidencia que la refute — por ejemplo, verificar si la reducción de precio responde a vencimiento de inventario y si la bodega tiene otro uso posible.",
+      "Ampliar la hipótesis para incluir todos los posibles movimientos del competidor durante el próximo año.",
+      "Esperar 30 días para ver si el competidor realiza más movimientos antes de analizar la hipótesis."
+    ],
+    correcta: 1,
+    explicacion: "El análisis de hipótesis exige buscar evidencia disconfirmatoria, no solo confirmatoria. El sesgo de confirmación lleva a los analistas a buscar solo lo que apoya su hipótesis. La fortaleza analítica está en intentar refutarla activamente — si la hipótesis resiste la evidencia contraria, se vuelve mucho más sólida y confiable para la dirección."
+  },
+  {
+    unidad: "Unidad 4 — Análisis, Difusión y Tecnología",
+    texto: "El gerente de IC de una cadena hotelera en Honduras recibe un hallazgo crítico: un fondo de capital privado ha adquirido el hotel rival más rezagado del mercado. Produce un informe de 35 páginas con todo el análisis, lo envía por correo al directorio y no recibe respuesta. La directora de estrategia finalmente dice: «Nadie lo leyó». ¿Qué principio fundamental de difusión de IC fue violado?",
+    opciones: [
+      "El principio de exclusividad: la información debió distribuirse solo al CEO, no a todo el directorio.",
+      "El principio de que el receptor define el formato: el directorio necesita un brief de una página con conclusiones e implicaciones, no un informe técnico de 35 páginas.",
+      "El principio de actualidad: el informe llegó demasiado tarde al directorio para ser relevante.",
+      "El principio de certeza: el analista debió esperar confirmación de todas las hipótesis antes de difundir."
+    ],
+    correcta: 1,
+    explicacion: "El primer principio de difusión efectiva establece que el receptor define el formato. Un CEO o directorio necesita una página con el hallazgo, la implicación estratégica y la recomendación concreta — no 35 páginas de análisis técnico. La IC más brillante no vale nada si no la leen quienes deben tomar la decisión."
+  },
+  {
+    unidad: "Unidad 4 — Análisis, Difusión y Tecnología",
+    texto: "Una analista de IC de un banco hondureño quiere rastrear a un competidor FinTech usando OSINT. Planea: (1) revisar el sitio web y blog corporativo del competidor; (2) analizar perfiles LinkedIn de su equipo directivo; (3) configurar Google Alerts con el nombre de la empresa; (4) acceder al sistema interno de gestión de clientes del competidor usando las credenciales de un exempleado que se las facilitó. ¿Cuál de estas acciones viola el código ético de la SCIP y potencialmente la ley?",
+    opciones: [
+      "La acción 1, porque revisar el sitio web de un competidor sin su consentimiento expreso infringe la Ley de Propiedad Intelectual.",
+      "La acción 3, porque configurar alertas automatizadas sobre el nombre de una empresa equivale a vigilancia comercial ilegal.",
+      "La acción 4, porque acceder a sistemas internos con credenciales ajenas es acceso no autorizado a sistemas informáticos — ilegal y antiético bajo cualquier código de IC.",
+      "Las acciones 1, 2 y 3 son problemáticas porque ninguna cuenta con autorización explícita del competidor."
+    ],
+    correcta: 2,
+    explicacion: "Las acciones 1, 2 y 3 son OSINT completamente legítimo — información pública voluntariamente disponible. La acción 4 viola el principio 1 del código SCIP (respetar la ley) y el principio 3 (honestidad y legalidad en los métodos). Acceder a sistemas privados con credenciales ajenas es un delito informático en prácticamente toda jurisdicción, sin importar cómo se obtuvieron las credenciales."
+  }
+];
+
+const letters = ['a','b','c','d'];
+let answered = new Array(10).fill(false);
+let correct  = new Array(10).fill(false);
+
+function render() {
+  const container = document.getElementById('questions');
+  container.innerHTML = '';
+  Qs.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card-' + qi;
+    const optsHtml = q.opciones.map((op, oi) => `
+      <div class="opt" id="opt-${qi}-${oi}" onclick="pick(${qi},${oi})">
+        <div class="opt-letter">${letters[oi]}</div>
+        <div class="opt-text">${op}</div>
+      </div>`).join('');
+    card.innerHTML = `
+      <div class="q-meta">
+        <div class="q-num">${qi + 1}</div>
+        <span class="q-unidad">${q.unidad}</span>
+      </div>
+      <div class="q-text">${q.texto}</div>
+      <div class="options">${optsHtml}</div>
+      <div class="feedback" id="fb-${qi}"></div>`;
+    container.appendChild(card);
+  });
+}
+
+function pick(qi, oi) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const q = Qs[qi];
+  const isOk = oi === q.correcta;
+  correct[qi] = isOk;
+
+  document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach((el, i) => {
+    el.classList.add('disabled');
+    if (i === q.correcta) el.classList.add('correct');
+    else if (i === oi && !isOk) el.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('fb-' + qi);
+  fb.style.display = 'block';
+  fb.className = 'feedback ' + (isOk ? 'correct' : 'wrong');
+  fb.innerHTML = `<strong>${isOk ? '✓ Correcto.' : '✗ Incorrecto.'}</strong> ${q.explicacion}`;
+  document.getElementById('card-' + qi).classList.add(isOk ? 'answered-correct' : 'answered-wrong');
+
+  const done = answered.filter(Boolean).length;
+  const pct  = done * 10;
+  document.getElementById('prog-fill').style.width  = pct + '%';
+  document.getElementById('prog-label').textContent = done + ' de 10 respondidas';
+  document.getElementById('prog-pct').textContent   = pct + '%';
+
+  if (done === 10) setTimeout(showResult, 700);
+}
+
+function showResult() {
+  const total = correct.filter(Boolean).length;
+  const pct   = total * 10;
+  const aprobado = pct >= 70;
+
+  const byUnit = [
+    { name:'Unidad 1', qs:[0,1] },
+    { name:'Unidad 2', qs:[2,3] },
+    { name:'Unidad 3', qs:[4,5,6] },
+    { name:'Unidad 4', qs:[7,8,9] },
+  ];
+
+  const unitHtml = byUnit.map(u => {
+    const ok  = u.qs.filter(i => correct[i]).length;
+    const tot = u.qs.length;
+    const cls = ok === tot ? 'all-ok' : ok > 0 ? 'partial' : 'needs-work';
+    return `<div class="r-unit">
+      <div class="r-unit-name">${u.name}</div>
+      <div class="r-unit-score ${cls}">${ok}/${tot}</div>
+    </div>`;
+  }).join('');
+
+  const panel = document.getElementById('result');
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div class="result-label-top">Resultado final</div>
+    <div class="result-score">${total}/10</div>
+    <div class="result-of">${pct}% de respuestas correctas</div>
+    <div class="result-bars">
+      <div class="result-bar-item ok">
+        <div class="rval">${total}</div>
+        <div class="rkey">Correctas</div>
+      </div>
+      <div class="result-bar-item ko">
+        <div class="rval">${10 - total}</div>
+        <div class="rkey">Incorrectas</div>
+      </div>
+    </div>
+    <hr class="result-divider">
+    <div style="font-size:12px;color:#94B4CC;margin-bottom:10px;text-align:center">Resultado por unidad</div>
+    <div class="result-unidades">${unitHtml}</div>
+    <hr class="result-divider">
+    <div class="result-msg ${aprobado ? 'aprobado' : 'repaso'}">
+      ${aprobado
+        ? '¡Excelente! El puntaje refleja dominio sólido de las Unidades 1–4.'
+        : 'Conviene repasar los temas con error antes del viernes 17.'}
+    </div>
+    <br>
+    <button class="btn-reset" onclick="reset()">Reiniciar guía</button>`;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function reset() {
+  answered = new Array(10).fill(false);
+  correct  = new Array(10).fill(false);
+  document.getElementById('prog-fill').style.width  = '0%';
+  document.getElementById('prog-label').textContent = '0 de 10 respondidas';
+  document.getElementById('prog-pct').textContent   = '0%';
+  document.getElementById('result').style.display   = 'none';
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+render();
+</script>
+</body>
+</html>
